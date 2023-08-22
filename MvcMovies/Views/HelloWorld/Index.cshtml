@@ -1,0 +1,14 @@
+﻿@{
+    ViewData["Title"] = "Movie List";
+    var parms = new Dictionary<string, string>
+            {
+                { "name", "Eduardo" },
+                { "numTimes", "5" }
+            };
+}
+
+<h2>My movie List</h2>
+
+<p>Hello from our View Templyyyate!</p>
+<p>Hola mllll</p>
+<a class="btn btn-primary" asp-controller="HelloWorld" asp-action="Welcome" asp-all-route-data="parms">Boton Welcome</a>
