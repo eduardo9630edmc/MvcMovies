@@ -7,13 +7,21 @@ var builder = WebApplication.CreateBuilder(args);
 var mvcBuilder = builder.Services.AddControllersWithViews();
 if (builder.Environment.IsDevelopment())
 {
+    // agrega la configuracion para permitir hacer cambios en ejecucion
     //builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
     mvcBuilder.AddRazorRuntimeCompilation();
 }
 //agrega la conexion a la base de datos al contexto 
 builder.Services.AddDbContext<MvcMoviesContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MvcMoviesContext") ?? throw new InvalidOperationException("Connection string 'MvcMoviesContext' not found.")));
-// agrega la configuracion para permitir hacer cambios en ejecucion
+
+//configuracion que especifica el mensaje de error predeterminado que el enlace de modelos va a usar
+//si un campo no hacepta nulos y se valida del lado del servidor
+builder.Services.AddRazorPages()
+    .AddMvcOptions(options => {
+        options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(
+            _ => "El campo es requerido.");
+    });
 
 var app = builder.Build();
 
