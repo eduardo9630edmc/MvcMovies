@@ -47,9 +47,16 @@
             &copy; 2023 - Movie App - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>*@
+   
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!--Agregar alfinal del body y despues del jquery, si no se genera un error de referencia-->
+    <!--Permite renderizar UnobtrusiveAjaxScript, sino se agrega de forma local se puede hacer
+    refrencia a la url configurando Services.AddUnobtrusiveAjax(useCdn: true, injectScriptIfNeeded: false)-->
+    @Html.RenderUnobtrusiveAjaxScript()
+    <!-- Or you can reference your local script file -->
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

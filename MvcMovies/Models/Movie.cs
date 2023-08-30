@@ -13,6 +13,11 @@ namespace MvcMovies.Models
         [StringLength(60,MinimumLength =3,ErrorMessage = "El tamaño del título debe de tener un mínimo de 3 y un máximo de 60 caracteres")]
         public string? Title { get; set; }
 
+        [Display(Name = "Clasificación")]
+        [Required(ErrorMessage = "El campo Clasificación es requerido")]
+        [RegularExpression(@"^[A-Z]+[a-zA-Z0-9""'\s-]*$")]
+        public string? Rating { get; set; }
+
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Display(Name ="Fecha de lanzamiento")]
         [Required(ErrorMessage = "El campo Fecha de lanzamiento es requerido")]
@@ -32,9 +37,6 @@ namespace MvcMovies.Models
         [Column(TypeName ="decimal(18,2)")]
         public decimal Price { get; set; }
 
-        [Display(Name = "Clasificación")]
-        [Required(ErrorMessage = "El campo Clasificación es requerido")]
-        [RegularExpression(@"^[A-Z]+[a-zA-Z0-9""'\s-]*$")]
-        public string? Rating { get; set; }           
+                 
     }
 }

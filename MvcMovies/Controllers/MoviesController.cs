@@ -22,35 +22,118 @@ namespace MvcMovies.Controllers
 
         // GET: Movies
         [HttpGet]
-        public async Task<IActionResult> Index(string movieGenre, string searchString)
+        public async Task<IActionResult> Index()
         {
             if (_context.Movie == null)
             {
                 return Problem("Entity set 'MvcMovieContext.Movie'  is null.");
             }
-            // Use LINQ to get list of genres.
+            // Genero
             IQueryable<string> genreQuery = from m in _context.Movie
                                             orderby m.Genre
                                             select m.Genre;
 
-            var movies = from m in _context.Movie
-                         select m;
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                movies = movies.Where(s => s.Title!.Contains(searchString));
-            }
-            if (!string.IsNullOrEmpty(movieGenre))
-            {
-                movies = movies.Where(x => x.Genre == movieGenre);
-            }
             var movieGenreVM = new MovieGenreViewModel
             {
                 Genres = new SelectList(await genreQuery.Distinct().ToListAsync()),
-                Movies = await movies.ToListAsync()
+                Movies = await GetMovieList(null,null)
             };
 
             return View(movieGenreVM);
+        }
+        public async Task<List<Movie>> GetMovieList(string? movieGenre, string? searchString)
+        {
+            try
+            {
+                if (_context.Movie == null)
+                {
+                    throw new Exception("Entity set 'MvcMovieContext.Movie'  is null.");
+                }
+                var movies = from m in _context.Movie
+                             select m;
+
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    movies = movies.Where(s => s.Title!.Contains(searchString));
+                }
+                if (!string.IsNullOrEmpty(movieGenre))
+                {
+                    movies = movies.Where(x => x.Genre == movieGenre);
+                }
+                return await movies.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> Search(string movieGenre, string searchString)
+        {
+            try
+            {
+                if (_context.Movie == null)
+                {
+                    return Problem("Entity set 'MvcMovieContext.Movie'  is null.");
+                }
+                var movieList = await GetMovieList(movieGenre, searchString);
+                return PartialView("_MovieList", movieList);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        // POST: Movies/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id,Title,ReleaseDate,Genre,Price,Rating")] Movie movie)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(movie);
+                await _context.SaveChangesAsync();
+                return PartialView("_MovieList",await GetMovieList(null,null));
+            }
+            return View(movie);
+        }
+
+        // POST: Movies/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken] //se usa para impedir la falsificacion de una solicitud
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ReleaseDate,Genre,Price,Rating")] Movie movie)
+        {
+            //if (id != movie.Id)
+            //{
+            //    return NotFound();
+            //}
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(movie);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!MovieExists(movie.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return PartialView("_MovieList", await GetMovieList(null, null));
+            }
+            return View(movie);
         }
 
         // GET: Movies/Details/5
@@ -72,77 +155,31 @@ namespace MvcMovies.Controllers
         }
 
         // GET: Movies/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
+        //public IActionResult Create()
+        //{
+        //    return View();
+        //}
 
-        // POST: Movies/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,ReleaseDate,Genre,Price,Rating")] Movie movie)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(movie);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(movie);
-        }
+       
 
         // GET: Movies/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Movie == null)
-            {
-                return NotFound();
-            }
+        ////[HttpGet]
+        ////public async Task<IActionResult> Edit(int? id)
+        ////{
+        ////    if (id == null || _context.Movie == null)
+        ////    {
+        ////        return NotFound();
+        ////    }
 
-            var movie = await _context.Movie.FindAsync(id);
-            if (movie == null)
-            {
-                return NotFound();
-            }
-            return View(movie);
-        }
+        ////    var movie = await _context.Movie.FindAsync(id);
+        ////    if (movie == null)
+        ////    {
+        ////        return NotFound();
+        ////    }
+        ////    return PartialView("_Edit", movie);
+        ////}
 
-        // POST: Movies/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken] //se usa para impedir la falsificacion de una solicitud
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ReleaseDate,Genre,Price,Rating")] Movie movie)
-        {
-            if (id != movie.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(movie);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!MovieExists(movie.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(movie);
-        }
+        
 
         // GET: Movies/Delete/5
         public async Task<IActionResult> Delete(int? id)
