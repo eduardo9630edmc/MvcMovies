@@ -23,4 +23,11 @@ $(function () {
 
         return $form;
     };
+    
 });
+function showLoading() {
+    $("#loading,#loadingIcon").show();
+}
+function hideLoading() {
+    $("#loading,#loadingIcon").hide();
+}

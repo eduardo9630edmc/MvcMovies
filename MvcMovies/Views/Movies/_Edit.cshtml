@@ -1,10 +1,12 @@
 ﻿@model MvcMovies.Models.Movie
 @using (Html.AjaxBeginForm("Edit", null, new AjaxOptions
  {
-     HttpMethod="Post",
-    InsertionMode=InsertionMode.Replace,
+     HttpMethod = "Post",
+     InsertionMode = InsertionMode.Replace,
      OnSuccess = "onSuccedAction('btnCancelEdit')",
-    UpdateTargetId = "MovieList"
+     UpdateTargetId = "MovieList",
+     OnBegin = "showLoading()",
+     OnComplete = "hideLoading"
  }, new { id = "editForm" }))
 {
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>

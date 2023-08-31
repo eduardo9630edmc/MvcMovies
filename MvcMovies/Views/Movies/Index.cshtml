@@ -52,11 +52,13 @@
     <a asp-action="Create" class="btn btn-primary">Crear Nuevo</a>
 </p>*@
 @using (Html.AjaxBeginForm("Search", null, new AjaxOptions
-{
-    HttpMethod="Post",
-    InsertionMode=InsertionMode.Replace,
-    UpdateTargetId = "MovieList"
-},new{ })
+ {
+     HttpMethod = "Post",
+     InsertionMode = InsertionMode.Replace,
+     UpdateTargetId = "MovieList",
+     OnBegin = "showLoading()",
+     OnComplete = "hideLoading"
+ },new{ })
 )
 {
     <div class="row pb-2" id="searchForm">

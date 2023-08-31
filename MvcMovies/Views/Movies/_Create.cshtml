@@ -1,10 +1,13 @@
 ﻿@model MvcMovies.Models.Movie
 
-@using(Html.AjaxBeginForm("Create",null, new AjaxOptions{
-     HttpMethod="Post",
-    InsertionMode=InsertionMode.Replace,
+@using(Html.AjaxBeginForm("Create",null, new AjaxOptions
+ {
+     HttpMethod = "Post",
+     InsertionMode = InsertionMode.Replace,
      OnSuccess = "onSuccedAction('btnCancelCreate')",
-    UpdateTargetId = "MovieList"
+     UpdateTargetId = "MovieList",
+     OnBegin = "showLoading()",
+     OnComplete = "hideLoading"
  }, new { id = "createForm" }))
 {
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
