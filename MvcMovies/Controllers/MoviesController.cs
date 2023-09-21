@@ -136,69 +136,6 @@ namespace MvcMovies.Controllers
             return View(movie);
         }
 
-        // GET: Movies/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Movie == null)
-            {
-                return NotFound();
-            }
-
-            var movie = await _context.Movie
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (movie == null)
-            {
-                return NotFound();
-            }
-
-            return View(movie);
-        }
-
-        // GET: Movies/Create
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
-
-       
-
-        // GET: Movies/Edit/5
-        ////[HttpGet]
-        ////public async Task<IActionResult> Edit(int? id)
-        ////{
-        ////    if (id == null || _context.Movie == null)
-        ////    {
-        ////        return NotFound();
-        ////    }
-
-        ////    var movie = await _context.Movie.FindAsync(id);
-        ////    if (movie == null)
-        ////    {
-        ////        return NotFound();
-        ////    }
-        ////    return PartialView("_Edit", movie);
-        ////}
-
-        
-
-        // GET: Movies/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.Movie == null)
-            {
-                return NotFound();
-            }
-
-            var movie = await _context.Movie
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (movie == null)
-            {
-                return NotFound();
-            }
-
-            return View(movie);
-        }
-
         // POST: Movies/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -215,7 +152,8 @@ namespace MvcMovies.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return PartialView("_MovieList", await GetMovieList(null, null));
+            //return RedirectToAction(nameof(Index));
         }
 
         private bool MovieExists(int id)

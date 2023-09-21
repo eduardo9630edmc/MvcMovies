@@ -4,10 +4,10 @@
  {
      HttpMethod = "Post",
      InsertionMode = InsertionMode.Replace,
-     OnSuccess = "onSuccedAction('btnCancelCreate')",
      UpdateTargetId = "MovieList",
+     OnSuccess = "onSuccedAction('btnCancelCreate')",
      OnBegin = "showLoading()",
-     OnComplete = "hideLoading"
+     OnComplete = "hideLoading()"
  }, new { id = "createForm" }))
 {
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -37,40 +37,7 @@
         <span asp-validation-for="Price" class="text-danger"></span>
     </div>
     <div class="d-flex justify-content-end my-3">
-        <button type="button" class="btn btn-secondary mx-2" data-bs-dismiss="modal" onclick="$(this).resetValidation()" id="btnCancelCreate">Cancelar</button>
         <input type="submit" value="Guardar" class="btn btn-primary" />
+        <button type="button" class="btn btn-secondary mx-2" data-bs-dismiss="modal" onclick="$(this).resetValidation()" id="btnCancelCreate">Cancelar</button>     
     </div>
 }
-
-@*<form asp-action="Create" id="createForm">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="form-group">
-        <label asp-for="Title" class="control-label"></label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger text-opacity-75 text-sm-start"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Rating" class="control-label"></label>
-        <input asp-for="Rating" class="form-control" />
-        <span asp-validation-for="Rating" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="ReleaseDate" class="control-label"></label>
-        <input asp-for="ReleaseDate" class="form-control" />
-        <span asp-validation-for="ReleaseDate" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Genre" class="control-label"></label>
-        <input asp-for="Genre" class="form-control" />
-        <span asp-validation-for="Genre" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Price" class="control-label"></label>
-        <input asp-for="Price" class="form-control" />
-        <span asp-validation-for="Price" class="text-danger"></span>
-    </div>
-    <div class="d-flex justify-content-end my-3">
-        <button type="button" class="btn btn-secondary mx-2" data-bs-dismiss="modal" onclick="$(this).resetValidation()">Cancelar</button>
-        <input type="submit" value="Guardar" class="btn btn-primary" />
-    </div>
-</form>*@

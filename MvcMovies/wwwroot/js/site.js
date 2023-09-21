@@ -20,10 +20,26 @@ $(function () {
             .removeClass("field-validation-error")
             .addClass("field-validation-valid")
             .empty();
-
+        if ($form.hasClass('editForm')) {
+            $form.addClass('readonly');
+            $form.find(':input').prop('readonly', true);
+            $form.find('button.btn-modal-edit').hide();
+            $form.find('button.btn-modal-edit-edit').show();
+        }
+        $form[0].reset();
         return $form;
     };
-    
+    $('#editForm.readonly :input').prop('readonly', true);
+
+    $('#editForm.readonly :button.btn-modal-edit',).hide();
+
+    $('#editForm :button.btn-modal-edit-edit').on('click', function () {
+        $(this).hide();
+        const form = $(this).closest('form');
+        form.removeClass('readonly');
+        form.find(':input').prop('readonly', false);
+        form.find('button.btn-modal-edit').show();
+    });
 });
 function showLoading() {
     $("#loading,#loadingIcon").show();

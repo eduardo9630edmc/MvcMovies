@@ -32,6 +32,12 @@ builder.Services.AddRazorPages()
 builder.Services.AddUnobtrusiveAjax(useCdn: true, injectScriptIfNeeded: false);
 //...
 var app = builder.Build();
+app.Use(async (context, next) =>
+{
+    // Do work that can write to the Response.
+    await next.Invoke();
+    // Do logging or other work that doesn't write to the Response.
+});
 
 //permite ingresar datos a la bd aliniciar el proyecto
 using (var scope = app.Services.CreateScope())

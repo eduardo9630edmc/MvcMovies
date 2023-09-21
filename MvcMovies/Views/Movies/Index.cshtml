@@ -1,4 +1,6 @@
 ﻿@model MvcMovies.Models.MovieGenreViewModel
+@* de esta forma se inyecta el token mediante IAntiforgery para utilizarlo ej javaScript, para obtenerlo se llama al método GetAndStoreTokens  *@
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 @{
     ViewData["Title"] = "Index";
 }
@@ -53,7 +55,7 @@
 </p>*@
 @using (Html.AjaxBeginForm("Search", null, new AjaxOptions
  {
-     HttpMethod = "Post",
+     HttpMethod = "post",
      InsertionMode = InsertionMode.Replace,
      UpdateTargetId = "MovieList",
      OnBegin = "showLoading()",
@@ -74,18 +76,6 @@
     </div>
 }
 
-@*<div class="row pb-2" id="searchForm">
-    <div class="col-2">
-        <select asp-for="MovieGenre" asp-items="Model.Genres" class="form-select">
-            <option value="">All</option>
-        </select>
-    </div>
-    <div class="col-5 d-flex">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="SearchString">
-        <button class="btn btn-outline-success" type="button" onclick="searchList()">Search</button>
-    </div>
-</div>*@
-
 <div id="MovieList">
     <partial name="_MovieList" for="Movies"/>
 </div>
@@ -102,35 +92,22 @@
         });
         function onSuccedAction(formidden){
             $('#' + formidden).click();
+            if (formidden === 'btnCancelCreate') {
+                Swal.fire(
+                    'Agregado!',
+                    'El registro se agrego correctamente.',
+                    'success'
+                )
+            }else{
+                Swal.fire(
+                    'Editado!',
+                    'El registro se editó correctamente.',
+                    'success'
+                )
+            }
         }
-        //function searchList(){
-
-        //    //debugger;
-        //    var movieGenre = $('#searchForm select[name="MovieGenre"]').val();
-        //    var searchString = $('#searchForm input[type=search],[name="SearchString"]').val();
-        //    $.ajax({
-        //        url: "/Movies/Search",
-        //        type: 'post',
-        //        async: true,
-        //        data: "movieGenre=" + movieGenre + "&searchString=" + searchString,
-        //        //complete: function () {
-        //        //    hideLoading();
-        //        //},
-        //        //beforeSend: function () {
-        //        //    showLoading();
-        //        //},
-        //        success: function (data) {
-        //            $('#MovieList').html(data);
-        //        },
-        //        error: function (error) {
-        //            //notifyError(error.statusText);
-        //            console.log(error);
-        //            alert("Error:" + error.responseText);
-        //        }
-        //    });
-        //}
         function editMovie(object) {
-            debugger;
+            //debugger;
             //console.log(object);
             var data = JSON.parse(object.dataset.model);
             console.log(data);
@@ -140,6 +117,55 @@
             $("#editForm [name='Movie.ReleaseDate']").val(data.ReleaseDate);
             $("#editForm [name='Movie.Genre']").val(data.Genre);
             $("#editForm [name='Movie.Price']").val(data.Price);
+        }
+        function deleteMovie(object){
+            debugger;
+            console.log(object);
+            var data = JSON.parse(object.dataset.model);
+            console.log(data);
+
+            Swal.fire({
+                title: '¿Esta seguro de eliminar este reguistro?',
+                // text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "Movies/Delete",
+                        type: 'Post',
+                        async: true,
+                        headers: {
+                            RequestVerificationToken: "@Antiforgery.GetAndStoreTokens(Context).RequestToken"
+                        },
+                        data: "id=" + data.Id,
+                        complete: function () {
+                            hideLoading();
+                        },
+                        beforeSend: function () {
+                            showLoading();
+                        },
+                        success: function (data) {
+                            $('#MovieList').html(data);
+                            Swal.fire(
+                                'Eliminado!',
+                                'El registro se eliminó correctamente.',
+                                'success'
+                            );
+                        },
+                        error: function (error) {
+                            //notifyError(error.statusText);
+                            console.log(error);
+                            alert("Error:" + error.responseText);
+                        }
+                    });
+                }
+            });
+
         }
         
     </script>
