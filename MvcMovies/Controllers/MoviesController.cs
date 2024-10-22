@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EFCore.BulkExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,7 @@ namespace MvcMovies.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
+            await _context.BulkInsertAsync<Movie>(new List<Movie>());
             if (_context.Movie == null)
             {
                 return Problem("Entity set 'MvcMovieContext.Movie'  is null.");

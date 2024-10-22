@@ -11,6 +11,11 @@
       "provider": "cdnjs",
       "library": "sweetalert2@11.7.28",
       "destination": "wwwroot/lib/sweetalert2/"
+    },
+    {
+      "provider": "cdnjs",
+      "library": "bootstrap@5.3.2",
+      "destination": "wwwroot/lib/bootstrap/"
     }
   ]
 }
